@@ -1,5 +1,5 @@
 ###########################################################################
-###############          Logistic regression                 ###########
+###############      Bias And Variance Tradeoff          ###########
 
 
 setwd("E:/R (Data Science)/excel files")
@@ -54,100 +54,7 @@ tab2
 sum(diag(tab2))/sum(tab2)
 
 
-#######################  K-Nearest Neighbour (KNN)  #####################3
 
-
-data <- read.csv("Prostate_Cancer.csv")
-
-data <- data[,-1]
-
-str(data)
-
-t <-table(data$diagnosis_result)
-pie(t)
-
-
-# Normalisation 
-
-normalise <- function(x){
-  return( (x - min(x)) / (max(x)- min(x)))     ### 0-1
-}
-
-
-data_n <- as.data.frame(lapply(data[2:9], normalise))
-
-### training and test set 
-train <- data_n[1:70,]
-test <- data_n[71:100,]
-
-
-### train and test labels
-train_lab <- data[1:70,1]
-test_lab <- data[71:100,1]
-table(test_lab)
-
-### Knn 
-install.packages("class")
-library(class)
-
-k <- sqrt(nrow(data))  #### K is determined by square root of no . of rows
-
-model <- knn(train = train,test = test,cl = train_lab, k= 9)
-table(model)
-
-
-t1 <- table(Prediction =model, Actual=test_lab)
-sum(diag(t1))/sum(t1)
-
-
-############################################################################
-#################    Multinomial Logistic regression  ######################
-
-data <- read.csv("Cardiotocographic.csv")
-str(data)
-
-
-# factorise the NSP 
-data$NSP <- as.factor(data$NSP)
-
-
-
-# train and test dataset
-id <- sample(2,nrow(data),replace = T,prob = c(.8,.2))
-train <- data[id ==1,]
-test <- data[id==2,]
-
-# Model Multinomial Logistic Regression
-install.packages("nnet")
-library(nnet)
-
-train$NSP <- relevel(train$NSP,ref = "1")
-model <- multinom(NSP ~.,train)
-
-
-# prediction of training data
-
-p <- predict(model,train)
-tab <- table(p,train$NSP)
-sum(diag(tab))/sum(tab)
-
-# prediction of testing set
-p1 <- predict(model,test)
-tab1 <- table(p1,test$NSP)
-
-sum(diag(tab1))/sum(tab1)
-
-
-
-n <- table(train$NSP)
-n/sum(n)
-
-tab/colSums(tab)
-
-
-n1 <- table(test$NSP)
-n1/sum(n1)
-tab1/colSums(tab1)
 
 
 
